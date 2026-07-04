@@ -130,5 +130,3 @@ This is an enrichment tool, not a replacement for actually reading papers. *Plea
 - **api goodwill is limited.** if you run it on a massive bibliography with hundreds of papers, openalex or openreview might rate-limit or block you. keep it reasonable.
 - **pdflatex is required.** if you don't have a working LaTeX installation that the CLI can call via `pdflatex`, the process will fail at the very end, leaving you with raw tex files but no pdf.
 - **caching dependency.** the first run builds a cache of names from the excel sheet. If you modify the excel file, make sure to delete `xlsx_names_cache.txt` so it regenerates properly.
-
-If any of that makes you trust the tool *more* rather than less, good — that was the goal. A tool that's honest about where it's blind is one you can actually reason about.
