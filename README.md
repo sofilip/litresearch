@@ -6,7 +6,7 @@ This project is a command-line tool that tries to solve that. You feed it a bibl
 
 It's a literature auditing tool. The idea is to run it on your library, see which papers are solid, and structure your references before writing your actual thesis draft. It is an enrichment pipeline, and it'll tell you so — repeatedly, in the limitations section — because I'd rather you read the papers than be impressed by a compiled summary.
 
-I did it because of a BSc thesis. Turns out supervisors don't like reading through raw PDF lists, and manual checks on author credentials take forever. This enriches the mess automatically.
+I did it because of my BSc thesis. This enriches the mess automatically.
 
 ## data
 
