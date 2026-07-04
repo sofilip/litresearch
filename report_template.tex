@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{calc} 
+\usepackage{xcolor} 
+\usepackage{geometry}
+\geometry{top=1.5in, left=1in, right=1in, bottom=1in} 
+\usepackage{booktabs}
+\usepackage{enumitem}
+\providecommand{\tightlist}{
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{amsmath}
+\usepackage{bbding,pifont}
+\usepackage{url}
+\usepackage{xurl}
+\usepackage[
+    colorlinks=true, 
+    linkcolor=blue,  
+    urlcolor=blue,   
+    citecolor=blue,
+    breaklinks=true   
+]{hyperref}
+\urlstyle{same}
+\def\UrlBreaks{\do\/\do-}
+\date{\today}
+\begin{document}
+
+\newlength{\labelcolwidth}
+\setlength{\labelcolwidth}{0.2\textwidth} 
+\newlength{\contentcolwidth}
+\setlength{\contentcolwidth}{0.8\textwidth} 
+
+\subsection*{Articles}
+
+[REPORT_SUMMARY]
+
+\newpage
+
+\begin{enumerate}[label=\arabic*., font=\Large]
+[LATEX_ITEMS]
+\end{enumerate}
+\end{document}

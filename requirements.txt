@@ -1,0 +1,9 @@
+pandas
+openpyxl
+beautifulsoup4
+python-dateutil
+pyzotero
+arxiv
+requests
+pyperclip
+pyTelegramBotAPI
