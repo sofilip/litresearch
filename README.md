@@ -6,11 +6,11 @@ This project is a command-line tool that tries to solve that. You feed it a bibl
 
 It's a literature auditing tool. The idea is to run it on your library, see which papers are solid, and structure your references before writing your actual thesis draft. It is an enrichment pipeline, and it'll tell you so — repeatedly, in the limitations section — because I'd rather you read the papers than be impressed by a compiled summary.
 
-We did it because of a BSc thesis. Turns out supervisors don't like reading through raw PDF lists, and manual checks on author credentials take forever. This enriches the mess automatically.
+I did it because of a BSc thesis. Turns out supervisors don't like reading through raw PDF lists, and manual checks on author credentials take forever. This enriches the mess automatically.
 
-## database basis
+## data
 
-The application relies on a sample Zotero bibliography JSON export (`bibliography.json`) and a massive Excel spreadsheet (`top_scientists_database.xlsx`) containing the top 2% most-cited scientists in the world.
+The application relies on a sample Zotero bibliography JSON export (`bibliography.json`) and a massive Excel spreadsheet (`top_scientists_database.xlsx`) containing the top 2% most-cited scientists in the world. Since the `.xlsx` file is too large for GitHub, you'll need to download it separately and place it in the project root.
 
 The one-line version of the premise: a paper that looks amazing in your downloads folder might actually have a retraction warning or a low citation impact when cross-referenced. Low context alone, high clarity together. That's the whole idea.
 
@@ -27,7 +27,7 @@ Formally: a user gives it a bibliography export and the top scientists database,
 
 Worth being clear about who the imagined users are, because it shapes everything:
 
-- **what researchers can do:** run automated checks on citation counts, find retractions, and flag top authors without visiting dozens of websites
+- **what researchers can do:** run automated checks on citation counts, find retractions, and flag top authors without visiting dozens of Ibsites
 - **what supervisors get:** a clean, formatted LaTeX PDF summary that cuts straight to the high-impact papers and filters out the fluff
 - **what you're trying to win:** time. stop reading papers that have been debunked or ignored by the community
 
@@ -72,7 +72,7 @@ Here is how the project files are laid out:
 | `main.py` | the command-line entry point |
 | `paper_analyzer.py` | core module for querying apis, looking up authors, and compiling latex |
 | `zotero_report_generator.py` | parses zotero json files and turns them into html reports |
-| `top_scientists_database.xlsx` | the massive author database (~89mb) to cross-reference names |
+| `top_scientists_database.xlsx` | the massive author database (~89mb, must download separately due to github size limits) |
 | `bibliography.json` | a sample json export from zotero to test the tool |
 | `report_template.tex` | the main latex template used to render the final pdf |
 | `paper_item_template.tex` | the snippet template for individual paper entries in the report |
@@ -88,7 +88,7 @@ It's set up to work with **`uv`**, the python package installer:
 uv tool install .
 ```
 
-That's it for the tool itself. If you want to compile the LaTeX reports to PDF, you will also need `pdflatex` installed on your system.
+That's it for the tool itself. If you want to compile the LaTeX reports to PDF, you will also need `pdflatex` installed on your system. Note that the `top_scientists_database.xlsx` file is too large to host on GitHub; you'll need to download it separately and place it directly in the project root.
 
 ## how to run it
 
