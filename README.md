@@ -139,4 +139,5 @@ This is an enrichment tool, not a replacement for actually reading papers. *Plea
 - **author matches are naive.** the name matching is a simple text search. If your paper was written by a "John Smith", the tool will probably highlight him as a top 2% global scientist, whether he is or not.
 - **api goodwill is limited.** if you run it on a massive bibliography with hundreds of papers, openalex or openreview might rate-limit or block you. keep it reasonable.
 - **pdflatex is required.** if you don't have a working LaTeX installation that the CLI can call via `pdflatex`, the process will fail at the very end, leaving you with raw tex files but no pdf.
+    - however, you can use `https://www.overleaf.com/` with the produced `bibliography.tex`  
 - **caching dependency.** the first run builds a cache of names from the excel sheet. If you modify the excel file, make sure to delete `xlsx_names_cache.txt` so it regenerates properly.
