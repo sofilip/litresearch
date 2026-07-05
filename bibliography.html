@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html><head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline' data:">
+		<title>Zotero Report</title>
+		<link rel="stylesheet" type="text/css" href="data:text/css;base64,Ym9keSB7Cgljb2xvci1zY2hlbWU6IGxpZ2h0IGRhcms7CgkvKiBUaGVzZSBzaG91bGQgYmUgdGhlIGRlZmF1bHRzLCBidXQganVzdCBpbiBjYXNlOiAqLwoJYmFja2dyb3VuZDogQ2FudmFzOwoJY29sb3I6IENhbnZhc1RleHQ7Cn0KCmEgewoJdGV4dC1kZWNvcmF0aW9uOiB1bmRlcmxpbmU7Cn0KCmJvZHkgewoJcGFkZGluZzogMDsKfQoKdWwucmVwb3J0IGxpLml0ZW0gewoJYm9yZGVyLXRvcDogNHB4IHNvbGlkICM1NTU7CglwYWRkaW5nLXRvcDogMWVtOwoJcGFkZGluZy1sZWZ0OiAxZW07CglwYWRkaW5nLXJpZ2h0OiAxZW07CgltYXJnaW4tYm90dG9tOiAyZW07Cn0KCmgxLCBoMiwgaDMsIGg0LCBoNSwgaDYgewoJZm9udC13ZWlnaHQ6IG5vcm1hbDsKfQoKaDIgewoJbWFyZ2luOiAwIDAgLjVlbTsKfQoKaDIucGFyZW50SXRlbSB7Cglmb250LXdlaWdodDogNjAwOwoJZm9udC1zaXplOiAxZW07CglwYWRkaW5nOiAwIDAgLjVlbTsKCWJvcmRlci1ib3R0b206IDFweCBzb2xpZCAjY2NjOwp9CgovKiBJZiBjb21iaW5pbmcgY2hpbGRyZW4sIGRpc3BsYXkgcGFyZW50IHNsaWdodGx5IGxhcmdlciAqLwp1bC5yZXBvcnQuY29tYmluZUNoaWxkSXRlbXMgaDIucGFyZW50SXRlbSB7Cglmb250LXNpemU6IDEuMWVtOwoJcGFkZGluZy1ib3R0b206IC43NWVtOwoJbWFyZ2luLWJvdHRvbTogLjRlbTsKfQoKaDIucGFyZW50SXRlbSAudGl0bGUgewoJZm9udC13ZWlnaHQ6IG5vcm1hbDsKfQoKaDMgewoJbWFyZ2luLWJvdHRvbTogLjZlbTsKCWZvbnQtd2VpZ2h0OiA2MDAgIWltcG9ydGFudDsKCWZvbnQtc2l6ZTogMWVtOwoJZGlzcGxheTogYmxvY2s7Cn0KCi8qIE1ldGFkYXRhIHRhYmxlICovCnRoIHsKCXZlcnRpY2FsLWFsaWduOiB0b3A7Cgl0ZXh0LWFsaWduOiByaWdodDsKCXdpZHRoOiAxNSU7Cgl3aGl0ZS1zcGFjZTogbm93cmFwOwp9Cgp0ZCB7CglwYWRkaW5nLWxlZnQ6IC41ZW07Cn0KCgp1bC5yZXBvcnQsIHVsLm5vdGVzLCB1bC50YWdzIHsKCWxpc3Qtc3R5bGU6IG5vbmU7CgltYXJnaW4tbGVmdDogMDsKCXBhZGRpbmctbGVmdDogMDsKfQoKLyogVGFncyAqLwpoMy50YWdzIHsKCWZvbnQtc2l6ZTogMS4xZW07Cn0KCnVsLnRhZ3MgewoJbGluZS1oZWlnaHQ6IDEuNzVlbTsKCWxpc3Qtc3R5bGU6IG5vbmU7Cn0KCnVsLnRhZ3MgbGkgewoJZGlzcGxheTogaW5saW5lOwp9Cgp1bC50YWdzIGxpOm5vdCg6bGFzdC1jaGlsZCk6YWZ0ZXIgewoJY29udGVudDogJywgJzsKfQoKCi8qIENoaWxkIG5vdGVzICovCmgzLm5vdGVzIHsKCWZvbnQtc2l6ZTogMS4xZW07Cn0KCnVsLm5vdGVzIHsKCW1hcmdpbi1ib3R0b206IDEuMmVtOwp9Cgp1bC5ub3RlcyA+IGxpOmZpcnN0LWNoaWxkIHAgewoJbWFyZ2luLXRvcDogMDsKfQoKdWwubm90ZXMgPiBsaSB7CglwYWRkaW5nOiAuN2VtIDA7Cn0KCnVsLm5vdGVzID4gbGk6bm90KDpsYXN0LWNoaWxkKSB7Cglib3JkZXItYm90dG9tOiAxcHggI2NjYyBzb2xpZDsKfQoKCnVsLm5vdGVzID4gbGkgcDpmaXJzdC1jaGlsZCB7CgltYXJnaW4tdG9wOiAwOwp9Cgp1bC5ub3RlcyA+IGxpIHA6bGFzdC1jaGlsZCB7CgltYXJnaW4tYm90dG9tOiAwOwp9CgovKiBBZGQgcXVvdGF0aW9uIG1hcmtzIGFyb3VuZCBibG9ja3F1b3RlICovCnVsLm5vdGVzID4gbGkgYmxvY2txdW90ZSBwOm5vdCg6ZW1wdHkpOmJlZm9yZSwKbGkubm90ZSBibG9ja3F1b3RlIHA6bm90KDplbXB0eSk6YmVmb3JlIHsKCWNvbnRlbnQ6ICfigJwnOwp9Cgp1bC5ub3RlcyA+IGxpIGJsb2NrcXVvdGUgcDpub3QoOmVtcHR5KTpsYXN0LWNoaWxkOmFmdGVyLApsaS5ub3RlIGJsb2NrcXVvdGUgcDpub3QoOmVtcHR5KTpsYXN0LWNoaWxkOmFmdGVyIHsKCWNvbnRlbnQ6ICfigJ0nOwp9CgovKiBQcmVzZXJ2ZSB3aGl0ZXNwYWNlIG9uIHBsYWludGV4dCBub3RlcyAqLwp1bC5ub3RlcyBsaSBwLnBsYWludGV4dCwgbGkubm90ZSBwLnBsYWludGV4dCwgZGl2Lm5vdGUgcC5wbGFpbnRleHQgewoJd2hpdGUtc3BhY2U6IHByZS13cmFwOwp9CgovKiBEaXNwbGF5IHRhZ3Mgd2l0aGluIGNoaWxkIG5vdGVzIGlubGluZSAqLwp1bC5ub3RlcyBoMy50YWdzIHsKCWRpc3BsYXk6IGlubGluZTsKCWZvbnQtc2l6ZTogMWVtOwp9Cgp1bC5ub3RlcyBoMy50YWdzOmFmdGVyIHsKCWNvbnRlbnQ6ICcgJzsKfQoKdWwubm90ZXMgdWwudGFncyB7CglkaXNwbGF5OiBpbmxpbmU7Cn0KCnVsLm5vdGVzIHVsLnRhZ3MgbGk6bm90KDpsYXN0LWNoaWxkKTphZnRlciB7Cgljb250ZW50OiAnLCAnOwp9CgoKLyogQ2hpbGQgYXR0YWNobWVudHMgKi8KaDMuYXR0YWNobWVudHMgewoJZm9udC1zaXplOiAxLjFlbTsKfQoKdWwuYXR0YWNobWVudHMgbGkgewoJcGFkZGluZy10b3A6IC41ZW07Cn0KCnVsLmF0dGFjaG1lbnRzIGRpdi5ub3RlIHsKCW1hcmdpbi1sZWZ0OiAyZW07Cn0KCnVsLmF0dGFjaG1lbnRzIGRpdi5ub3RlIHA6Zmlyc3QtY2hpbGQgewoJbWFyZ2luLXRvcDogLjc1ZW07Cn0KCmRpdiB0YWJsZSB7Cglib3JkZXItY29sbGFwc2U6IGNvbGxhcHNlOwp9CgpkaXYgdGFibGUgdGQsIGRpdiB0YWJsZSB0aCB7Cglib3JkZXI6IDFweCAjY2NjIHNvbGlkOwoJYm9yZGVyLWNvbGxhcHNlOiBjb2xsYXBzZTsKCXdvcmQtYnJlYWs6IGJyZWFrLWFsbDsKfQoKZGl2IHRhYmxlIHRkIHA6ZW1wdHk6OmFmdGVyLCBkaXYgdGFibGUgdGggcDplbXB0eTo6YWZ0ZXIgewoJY29udGVudDogIlwwMGEwIjsKfQoKZGl2IHRhYmxlIHRkICo6Zmlyc3QtY2hpbGQsIGRpdiB0YWJsZSB0aCAqOmZpcnN0LWNoaWxkIHsKCW1hcmdpbi10b3A6IDA7Cn0KCmRpdiB0YWJsZSB0ZCAqOmxhc3QtY2hpbGQsIGRpdiB0YWJsZSB0aCAqOmxhc3QtY2hpbGQgewoJbWFyZ2luLWJvdHRvbTogMDsKfQo=">
+		<link rel="stylesheet" type="text/css" media="screen,projection" href="data:text/css;base64,LyogR2VuZXJpYyBzdHlsZXMgKi8KYm9keSB7Cglmb250OiA2Mi41JSBHZW9yZ2lhLCBUaW1lcywgc2VyaWY7Cgl3aWR0aDogNzgwcHg7CgltYXJnaW46IDAgYXV0bzsKfQoKaDIgewoJZm9udC1zaXplOiAxLjVlbTsKCWxpbmUtaGVpZ2h0OiAxLjVlbTsKCWZvbnQtZmFtaWx5OiBHZW9yZ2lhLCBUaW1lcywgc2VyaWY7Cn0KCnAgewoJbGluZS1oZWlnaHQ6IDEuNWVtOwp9CgphOmFueS1saW5rIHsKCWNvbG9yOiAjOTAwOwp9CgphOmhvdmVyLCBhOmFjdGl2ZSB7Cgljb2xvcjogIzc3NzsKfQoKQG1lZGlhIChwcmVmZXJzLWNvbG9yLXNjaGVtZTogZGFyaykgewoJYTphbnktbGluayB7CgkJY29sb3I6ICNmMDA7Cgl9CgoJYTpob3ZlciwgYTphY3RpdmUgewoJCWNvbG9yOiAjOTk5OwoJfQp9CgoKdWwucmVwb3J0IHsKCWZvbnQtc2l6ZTogMS40ZW07Cgl3aWR0aDogNjgwcHg7CgltYXJnaW46IDAgYXV0bzsKCXBhZGRpbmc6IDIwcHggMjBweDsKfQoKLyogTWV0YWRhdGEgdGFibGUgKi8KdGFibGUgewoJYm9yZGVyOiAxcHggI2NjYyBzb2xpZDsKCW92ZXJmbG93OiBhdXRvOwoJd2lkdGg6IDEwMCU7CgltYXJnaW46IC4xZW0gYXV0byAuNzVlbTsKCXBhZGRpbmc6IDAuNWVtOwp9Cg==">
+		<link rel="stylesheet" type="text/css" media="print" href="data:text/css;base64,Ym9keSB7Cglmb250OiAxMnB0ICJUaW1lcyBOZXcgUm9tYW4iLCBUaW1lcywgR2VvcmdpYSwgc2VyaWY7CgltYXJnaW46IDA7Cgl3aWR0aDogYXV0bzsKfQoKLyogUGFnZSBCcmVha3MgKHBhZ2UtYnJlYWstaW5zaWRlIG9ubHkgcmVjb2duaXplZCBieSBPcGVyYSkgKi8KaDEsIGgyLCBoMywgaDQsIGg1LCBoNiB7CglwYWdlLWJyZWFrLWFmdGVyOiBhdm9pZDsKCXBhZ2UtYnJlYWstaW5zaWRlOiBhdm9pZDsKfQoKdWwsIG9sLCBkbCB7CglwYWdlLWJyZWFrLWluc2lkZTogYXZvaWQ7Cgljb2xvci1hZGp1c3Q6IGV4YWN0Owp9CgpoMiB7Cglmb250LXNpemU6IDEuM2VtOwoJbGluZS1oZWlnaHQ6IDEuM2VtOwp9CgphIHsKCWNvbG9yOiBpbmhlcml0OwoJdGV4dC1kZWNvcmF0aW9uOiBub25lOwp9Cg==">
+	</head>
+	<body>
+		<ul class="report combineChildItems">
+			<li id="item_ABDENNEBIFullyHomomorphicEncryptionLlama3Model2026" class="item article">
+			<h2>Fully Homomorphic Encryption on Llama 3 model for privacy preserving LLM inference</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Anes Abdennebi</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Nadjia Kara</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Laaziz Lahlou</td>
+					</tr>
+					<tr>
+					<th>Abstract</th>
+						<td>The applications of Generative Artificial Intelligence (GenAI) and their intersections with data-driven fields, such as healthcare, finance, transportation, and information security, have led to significant improvements in service efficiency and low latency. However, this synergy raises serious concerns regarding the security of large language models (LLMs) and their potential impact on the privacy of companies and users' data. Many technology companies that incorporate LLMs in their services with a certain level of command and control bear a risk of data exposure and secret divulgence caused by insecure LLM pipelines, making them vulnerable to multiple attacks such as data poisoning, prompt injection, and model theft. Although several security techniques (input/output sanitization, decentralized learning, access control management, and encryption) were implemented to reduce this risk, there is still an imminent risk of quantum computing attacks, which are expected to break existing encryption algorithms, hence, retrieving secret keys, encrypted sensitive data, and decrypting encrypted models. In this extensive work, we integrate the Post-Quantum Cryptography (PQC) based Lattice-based Homomorphic Encryption (HE) main functions in the LLM's inference pipeline to secure some of its layers against data privacy attacks. We modify the inference pipeline of the transformer architecture for the LLAMA-3 model while injecting the main homomorphic encryption operations provided by the concrete-ml library. We demonstrate high text generation accuracies (up to 98%) with reasonable latencies (237 ms) on an i9 CPU, reaching up to 80 tokens per second, which proves the feasibility and validity of our work while running a FHE-secured LLAMA-3 inference model. Further experiments and analysis are discussed to justify models' text generation latencies and behaviours.</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2026-4-14</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>ABDENNEBIFullyHomomorphicEncryptionLlama3Model2026</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.48550/arXiv.2604.12168">10.48550/arXiv.2604.12168</a></td>
+					</tr>
+					<tr>
+					<th>Number</th>
+						<td>arXiv:2604.12168</td>
+					</tr>
+					<tr>
+					<th>Publisher</th>
+						<td>arXiv</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>arXiv.org</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="http://arxiv.org/abs/2604.12168">http://arxiv.org/abs/2604.12168</a></td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_ALSUWATCybersecurityTrustModelAdaptiveCloudAuthentication2023" class="item journalArticle">
+			<h2>Cyber-security trust model through adaptive cloud authentication protocol for web application</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Journal Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Hatim Alsuwat</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2023-5-23</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>ALSUWATCybersecurityTrustModelAdaptiveCloudAuthentication2023</td>
+					</tr>
+					<tr>
+					<th>Publication</th>
+						<td>Journal of Electronic Imaging</td>
+					</tr>
+					<tr>
+					<th>Journal Abbr</th>
+						<td>Journal of Electronic Imaging</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.1117/1.JEI.32.4.042109">10.1117/1.JEI.32.4.042109</a></td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>ResearchGate</td>
+					</tr>
+					<tr>
+					<th>Volume</th>
+						<td>32</td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_BIEGESoKTaxonomyCybersecurityIncidentResponseInfluence2026" class="item article">
+			<h2>SoK: A Taxonomy for Cybersecurity Incident Response Influence Factors</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Thomas Biege</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Marius Brockhoff</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Jonas Kaspereit</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Fabian Ising</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Lea Gröber</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Sebastian Schinzel</td>
+					</tr>
+					<tr>
+					<th>Abstract</th>
+						<td>Cybersecurity incident response has emerged as a critical area of interest for both researchers and practitioners. The corpus of literature on cybersecurity incident response is expanding, yet a unified framework for systematically organizing the accumulated knowledge remains absent. The aspects of incident response span multiple domains, including technology, human-computer interaction, organizational theory, and human factors. A comprehensive, integrative perspective on these factors can enable researchers to identify underexplored areas and more effectively target their empirical and theoretical investigations. Our study systematizes the factors that influence organizational preparedness for and response to cybersecurity incidents. Through a systematic review of academic literature (n = 417) and non-scientific publications (n = 40), we derived the "Cybersecurity Incident Response Influencing Factor Taxonomy" (\textit{CIR-IF Taxonomy}). Existing empirical findings were classified within this taxonomy, providing a comprehensive and up-to-date overview of knowledge from the period 1999 to mid-2024. The taxonomy categories were systematically compared with seven established scientific frameworks and with the \textit{NIST Cyber Security Framework} elements referenced in the \textit{NIST Special Publication 800-61r3} incident response profile. The results of this comparison show that the \textit{CIR-IF Taxonomy} delivers a richer, more rigorous, and more systematically organized view of the factors that drive and shape incident response.</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2026-7-2</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>BIEGESoKTaxonomyCybersecurityIncidentResponseInfluence2026</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.1109/EuroSP68448.2026.00068">10.1109/EuroSP68448.2026.00068</a></td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>arXiv.org</td>
+					</tr>
+					<tr>
+					<th>Short Title</th>
+						<td>SoK</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="http://arxiv.org/abs/2607.02451">http://arxiv.org/abs/2607.02451</a></td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_DINGLEDINETorSecondGenerationOnionRouter2004" class="item conferencePaper">
+			<h2>Tor: The {Second-Generation} Onion Router</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Conference Paper</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Roger Dingledine</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Nick Mathewson</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Paul Syverson</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2004</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>DINGLEDINETorSecondGenerationOnionRouter2004</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.21236/ADA465464">10.21236/ADA465464</a></td>
+					</tr>
+					<tr>
+					<th>Conference Name</th>
+						<td>13th USENIX Security Symposium (USENIX Security 04)</td>
+					</tr>
+					<tr>
+					<th>Language</th>
+						<td>en</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>www.usenix.org</td>
+					</tr>
+					<tr>
+					<th>Short Title</th>
+						<td>Tor</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="https://www.usenix.org/conference/13th-usenix-security-symposium/tor-second-generation-onion-router">https://www.usenix.org/conference/13th-usenix-security-symposium/tor-second-generation-onion-router</a></td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_FRAGKIADAKISEvaluatingPrivacyTechnologiesDigitalPaymentsBalanced2025" class="item journalArticle">
+			<h2>Evaluating Privacy Technologies in Digital Payments: A Balanced Framework</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Journal Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Ioannis Fragkiadakis</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Stefanos Gritzalis</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Costas Lambrinoudakis</td>
+					</tr>
+					<tr>
+					<th>Abstract</th>
+						<td>Privacy enhancement technologies are significant in the development of digital payment systems. At present, multiple innovative digital payment solutions have been introduced and may be implemented globally soon. As cyber threats continue to increase in complexity, security is a crucial factor to consider before adopting any technology. In addition to prioritizing security in the development of digital payment systems, it is essential to address user privacy concerns. Modern digital payment solutions offer numerous advantages over traditional systems; however, they also introduce new considerations that must be accounted for during implementation. These considerations go beyond legislative requirements and encompass new payment methods, including transactions made through mobile devices regardless of internet connectivity. A range of regulations and guidelines exist to ensure user privacy in financial transactions, with the General Data Protection Regulation (GDPR) being particularly notable, while technical reports have thoroughly examined the differences between various privacy-enhancing technologies. Additionally, it is important to note that all legal payment systems are required to maintain information for audit purposes. This paper introduces a comprehensive framework that integrates all critical considerations for selecting appropriate privacy enhancement technologies within digital payment systems, while it utilizes a detailed scoring system designed for convenience and adaptability, allowing it to be employed for purposes such as auditing. Thus, the proposed scoring framework integrates security, GDPR compliance, audit, privacy-preserving technical measures, and operational constraints to assess privacy technologies for digital payments.</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2025-12-1</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>FRAGKIADAKISEvaluatingPrivacyTechnologiesDigitalPaymentsBalanced2025</td>
+					</tr>
+					<tr>
+					<th>Publication</th>
+						<td>Journal of Cybersecurity and Privacy</td>
+					</tr>
+					<tr>
+					<th>Journal Abbr</th>
+						<td>JCP</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.3390/jcp5040107">10.3390/jcp5040107</a></td>
+					</tr>
+					<tr>
+					<th>ISSN</th>
+						<td>2624-800X</td>
+					</tr>
+					<tr>
+					<th>Issue</th>
+						<td>4</td>
+					</tr>
+					<tr>
+					<th>Language</th>
+						<td>en</td>
+					</tr>
+					<tr>
+					<th>Pages</th>
+						<td>107</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>DOI.org (Crossref)</td>
+					</tr>
+					<tr>
+					<th>Short Title</th>
+						<td>Evaluating Privacy Technologies in Digital Payments</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="https://www.mdpi.com/2624-800X/5/4/107">https://www.mdpi.com/2624-800X/5/4/107</a></td>
+					</tr>
+					<tr>
+					<th>Volume</th>
+						<td>5</td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_GONGQuantumMultiPartyThresholdPrivateSetIntersection2026" class="item article">
+			<h2>Quantum Multi-Party Threshold Private Set Intersection with Explicit Cardinality Testing</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Zixian Gong</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Kun Tian</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Yi Zhang</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Fengxia Liu</td>
+					</tr>
+					<tr>
+					<th>Abstract</th>
+						<td>Threshold private set intersection (TPSI) allows parties to reveal their intersection only when its cardinality reaches a prescribed threshold. Existing quantum TPSI protocols typically rely on a third party (TP) to interpret the final results, which deviates from the cardinality-testing paradigm of TPSI. In this paper, we propose a quantum multiparty TPSI protocol with explicit cardinality testing. Our protocol develops a rotation-based quantum construction in which single-photon sequences are sequentially processed through participant-side data rotations, TP--participant masking rotations, and correlated aggregate rotations. This design produces hidden-label measurement vectors: TP can complete the final measurement, but cannot interpret the semantic meaning of the outcomes. Based on these hidden measurements, we further realize the threshold decision through an oblivious linear evaluation (OLE)-based inner product procedure and a lightweight garbled circuit, revealing only \(\mathbf 1[|\bigcap_i X_i|\ge τ]\) before conditional intersection reconstruction. We prove the correctness and security of the proposed protocol, and further validate its feasibility through quantum-circuit simulations implemented on the IBM \textsf{Qiskit} platform.</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2026-6-26</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>GONGQuantumMultiPartyThresholdPrivateSetIntersection2026</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.48550/arXiv.2606.27996">10.48550/arXiv.2606.27996</a></td>
+					</tr>
+					<tr>
+					<th>Number</th>
+						<td>arXiv:2606.27996</td>
+					</tr>
+					<tr>
+					<th>Publisher</th>
+						<td>arXiv</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>arXiv.org</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="http://arxiv.org/abs/2606.27996">http://arxiv.org/abs/2606.27996</a></td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_IQBALLPsecFastSecureCryptographicSystemOptical2022" class="item journalArticle">
+			<h2>LPsec: a fast and secure cryptographic system for optical connections</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Journal Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>M. Iqbal</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>L. Velasco</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>N. Costa</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>A. Napoli</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>J. Pedro</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>M. Ruiz</td>
+					</tr>
+					<tr>
+					<th>Abstract</th>
+						<td>High capacity and low latency of optical connections are ideal for supporting current and future communication services, including 5G and beyond. Although some of those services are already secured at the packet layer using standard stream ciphers, like the Advanced Encryption Standard and ChaCha, secure transmission at the optical layer is still not implemented. To secure the optical layer, cryptographic methods need to be fast enough to support high-speed optical transmission and cannot introduce significant delay. Moreover, methods for key exchange, key generation, and key expansion are required, which can be implemented on standard coherent transponders. In this paper, we propose Light Path SECurity (LPsec), a secure cryptographic solution for optical connections that involves fast data encryption using stream ciphers and key exchange using Diffie–Hellman protocol through the optical channel. To support encryption of high-speed data streams, a fast, general-purpose pseudorandom number generator is used. Moreover, to make the scheme more secure against exhaustive search attacks, an additional substitution cipher is proposed. In contrast to the limited encryption speeds that standard stream ciphers can support, LPsec can support high-speed rates. Numerical simulation for 16 quadrature amplitude modulation (QAM), 32-QAM, and 64-QAM show that LPsec provides a sufficient security level while introducing only negligible delay.</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2022-4-1</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>IQBALLPsecFastSecureCryptographicSystemOptical2022</td>
+					</tr>
+					<tr>
+					<th>Publication</th>
+						<td>Journal of Optical Communications and Networking</td>
+					</tr>
+					<tr>
+					<th>Journal Abbr</th>
+						<td>J. Opt. Commun. Netw., JOCN</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.1364/JOCN.444398">10.1364/JOCN.444398</a></td>
+					</tr>
+					<tr>
+					<th>ISSN</th>
+						<td>1943-0639</td>
+					</tr>
+					<tr>
+					<th>Issue</th>
+						<td>4</td>
+					</tr>
+					<tr>
+					<th>Language</th>
+						<td>EN</td>
+					</tr>
+					<tr>
+					<th>License</th>
+						<td>© 2022 Optica Publishing Group</td>
+					</tr>
+					<tr>
+					<th>Pages</th>
+						<td>278–288</td>
+					</tr>
+					<tr>
+					<th>Publisher</th>
+						<td>Optica Publishing Group</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>opg.optica.org</td>
+					</tr>
+					<tr>
+					<th>Short Title</th>
+						<td>LPsec</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="https://opg.optica.org/jocn/abstract.cfm?uri=jocn-14-4-278">https://opg.optica.org/jocn/abstract.cfm?uri=jocn-14-4-278</a></td>
+					</tr>
+					<tr>
+					<th>Volume</th>
+						<td>14</td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_RetractedCyberSecurityIntrusionDetectionUsing2023" class="item journalArticle">
+			<h2>Retracted: Cyber Security against Intrusion Detection Using Ensemble-Based Approaches</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Journal Article</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2023-12-6</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>RetractedCyberSecurityIntrusionDetectionUsing2023</td>
+					</tr>
+					<tr>
+					<th>Publication</th>
+						<td>Security and Communication Networks</td>
+					</tr>
+					<tr>
+					<th>Journal Abbr</th>
+						<td>Security and Communication Networks</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.1155/2023/9837194">10.1155/2023/9837194</a></td>
+					</tr>
+					<tr>
+					<th>ISSN</th>
+						<td>1939-0114, 1939-0122</td>
+					</tr>
+					<tr>
+					<th>Language</th>
+						<td>en</td>
+					</tr>
+					<tr>
+					<th>Pages</th>
+						<td>1–1</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>DOI.org (Crossref)</td>
+					</tr>
+					<tr>
+					<th>Short Title</th>
+						<td>Retracted</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="https://www.hindawi.com/journals/scn/2023/9837194/">https://www.hindawi.com/journals/scn/2023/9837194/</a></td>
+					</tr>
+					<tr>
+					<th>Volume</th>
+						<td>2023</td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_SATHEESHAdaptiveCloudSecurityApproachImprovingPrivacy2026" class="item journalArticle">
+			<h2>An adaptive cloud security approach for improving privacy with authentication</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Journal Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Kavuri K. S. V. A. Satheesh</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>T. Krishna Sree</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>S. Mary Evanchalin</td>
+					</tr>
+					<tr>
+					<th>Abstract</th>
+						<td>Cloud computing is pervasive in storing and processing confidential information, yet traditional authentication mechanisms such as passwords and tokens remain vulnerable to attacks, and these vulnerabilities compromise data confidentiality, integrity, and user trust, Therefore, a critical need is to develop robust cloud security models that combine biometric-based authentication with adaptive crypto approaches along with advanced attack detection features for effectively guarding confidential information. This paper introduces a new Decision Q-learning Camellia Authentication Framework (DQCAF) cloud data security model that incorporates dynamic Q-learning-based key generation, Camellia encryption, and biometric authentication to ensure strong protection of sensitive cloud-stored information. In the designed system, plaintext data is encrypted with dynamically generated keys, and the attempted unauthorized access is tracked by a Decision Tree, which identifies the anomalous activity, such as infrequent login attempts, request volume, and IP trends. An additional biometric authentication verifies the user. Finally, the authenticated user decrypts the data. Moreover, security validation is performed for establishing the correctness of biometric-based authentication. The performance of the model is validated with few standard metrics and obtained better performance such as 95% throughput, 0.67 ms latency, 99.24% Authentication accuracy, 1.66% False acceptance rate (FAR) and 1.29% False rejection rate (FRR), which shows improvement of 15% in throughput, 2% improvement in accuracy and 2–3% improvement in FAR and FRR. The developed framework demonstrates its ability to provide scalable security in the cloud compared to existing cloud security methods.</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2026-2-2</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>SATHEESHAdaptiveCloudSecurityApproachImprovingPrivacy2026</td>
+					</tr>
+					<tr>
+					<th>Publication</th>
+						<td>Cluster Computing</td>
+					</tr>
+					<tr>
+					<th>Journal Abbr</th>
+						<td>Cluster Comput</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.1007/s10586-026-05957-6">10.1007/s10586-026-05957-6</a></td>
+					</tr>
+					<tr>
+					<th>ISSN</th>
+						<td>1573-7543</td>
+					</tr>
+					<tr>
+					<th>Issue</th>
+						<td>2</td>
+					</tr>
+					<tr>
+					<th>Language</th>
+						<td>en</td>
+					</tr>
+					<tr>
+					<th>Pages</th>
+						<td>126</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>Springer Link</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="https://doi.org/10.1007/s10586-026-05957-6">https://doi.org/10.1007/s10586-026-05957-6</a></td>
+					</tr>
+					<tr>
+					<th>Volume</th>
+						<td>29</td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_THEESAgenticAIPoweredReIdentificationEmergingScalableThreat2026" class="item article">
+			<h2>Agentic AI-Powered Re-Identification: An Emerging, Scalable Threat to Mobility Microdata Privacy</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Oscar Thees</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Roman Müller</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Matthias Templ</td>
+					</tr>
+					<tr>
+					<th>Abstract</th>
+						<td>The widespread collection of fine-grained location data by commercial data brokers creates a re-identification risk that is not widely recognised by the public. While prior research has established that mobility traces are highly unique and that individuals can, in principle, be identified from a handful of spatio-temporal points, such attacks have historically required significant manual effort from skilled analysts, limiting their practical scale. In this feasibility study, we demonstrate in a real world setting that agentic AI fundamentally changes this threat model. We present an end-to-end pipeline in which large language model agents autonomously search the open web, cross-reference public records and social media, and resolve raw coordinate sequences to candidate identities - without human intervention. We evaluate the pipeline on a spatio-temporal dataset containing simulated location points anchored at and around true home and work addresses, focusing on a high-risk disclosure scenario. Our results demonstrate that, from spatio-temporal data and public sources alone, our agentic AI successfully re-identified 18 of the 25 re-identifiable individuals (72%) and 18 of 43 cases overall (41.9%). We discuss implications for Statistical Disclosure Control (SDC) practice and outline the near-future escalation that data custodians and regulators must anticipate. De facto anonymity - an implicit foundation of SDC practice - is shifting. Agentic AI strengthens the case that re-identification is reasonably likely by any means under the GDPR Recital-26 standard, at costs of minutes-and-dollars per target.</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2026-6-26</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>THEESAgenticAIPoweredReIdentificationEmergingScalableThreat2026</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.48550/arXiv.2606.27936">10.48550/arXiv.2606.27936</a></td>
+					</tr>
+					<tr>
+					<th>Number</th>
+						<td>arXiv:2606.27936</td>
+					</tr>
+					<tr>
+					<th>Publisher</th>
+						<td>arXiv</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>arXiv.org</td>
+					</tr>
+					<tr>
+					<th>Short Title</th>
+						<td>Agentic AI-Powered Re-Identification</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="http://arxiv.org/abs/2606.27936">http://arxiv.org/abs/2606.27936</a></td>
+					</tr>
+				</tbody></table>
+			</li>
+
+			<li id="item_VALEROSGhostShellMeasuringNonInteractiveSSHAttacks2026" class="item article">
+			<h2>Ghost Without Shell: Measuring Non-Interactive SSH Attacks on Honeypots</h2>
+				<table>
+					<tbody>
+					<tr>
+						<th>Item Type</th>
+						<td>Article</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Veronica Valeros</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Muris Sladić</td>
+					</tr>
+					<tr>
+						<th class="author">Author</th>
+						<td>Sebastian Garcia</td>
+					</tr>
+					<tr>
+					<th>Abstract</th>
+						<td>Cyber deception research has focused on improving honeypot deception capabilities to increase attacker engagement and extend their interactions to collect more and better intelligence. For SSH honeypots, this relies on the assumption that attackers log in, open a shell, and type. We tested whether this still held by deploying eleven SSH honeypots that served both interactive and non-interactive session requests for fifteen days. We collected 177,622 authenticated sessions and validated our results against an independent Cowrie dataset over the same time window. We found that 99.23% of sessions were non-interactive. Interactive sessions account for only 0.10%. The same pattern held in the comparative third-party dataset used for evaluation. This finding is important because a honeypot that focuses on interactive shells or evaluates success based on session length and the number of commands can miss most authenticated attacks and draw the wrong conclusions about what attackers do after login.</td>
+					</tr>
+					<tr>
+					<th>Date</th>
+						<td>2026-6-26</td>
+					</tr>
+					<tr>
+					<th>Accessed</th>
+						<td>2026-7-4</td>
+					</tr>
+					<tr>
+					<th>Citation Key</th>
+						<td>VALEROSGhostShellMeasuringNonInteractiveSSHAttacks2026</td>
+					</tr>
+					<tr>
+					<th>DOI</th>
+						<td><a href="http://doi.org/10.48550/arXiv.2606.28006">10.48550/arXiv.2606.28006</a></td>
+					</tr>
+					<tr>
+					<th>Number</th>
+						<td>arXiv:2606.28006</td>
+					</tr>
+					<tr>
+					<th>Publisher</th>
+						<td>arXiv</td>
+					</tr>
+					<tr>
+					<th>Library Catalog</th>
+						<td>arXiv.org</td>
+					</tr>
+					<tr>
+					<th>Short Title</th>
+						<td>Ghost Without Shell</td>
+					</tr>
+					<tr>
+					<th>URL</th>
+						<td><a href="http://arxiv.org/abs/2606.28006">http://arxiv.org/abs/2606.28006</a></td>
+					</tr>
+				</tbody></table>
+			</li>
+
+		</ul>
+	</body>
+</html>
