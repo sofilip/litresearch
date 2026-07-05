@@ -1,5 +1,15 @@
 # litresearch
 
+```
+ _      _ _   _____                               _
+| |    (_) | |  __ \                             | |
+| |     _| |_| |__) |___  ___  ___  __ _ _ __ ___| |__
+| |    | | __|  _  // _ \/ __|/ _ \/ _` | '__/ __| '_ \
+| |____| | |_| | \ \  __/\__ \  __/ (_| | | | (__| | | |
+|______|_|\__|_|  \_\___||___/\___|\__,_|_|  \___|_| |_|
+
+```
+
 Academic literature piles up in a surprising number of ways when you're writing a thesis. A PDF here, a citation there. Before you know it, you have a mountain of bibliography files, half of which are retracted or written by authors who aren't even active in the field anymore. None of it looks like a big deal when you download them one by one. But stack up fifty papers, and suddenly you have no idea what you're actually looking at.
 
 This project is a command-line tool that tries to solve that. You feed it a bibliography export from Zotero (or your preferred citation manager), and it queries external databases — OpenAlex, PubPeer, and OpenReview — to figure out citation counts, find potential retractions, check if any author is in the top 2% globally, and compile it all into a LaTeX PDF digest. Essentially, it says, *"Here are the papers you grabbed, here's what the academic community actually thinks of them, and here's who you should read first."*
