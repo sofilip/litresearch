@@ -1,7 +1,7 @@
 [project]
 name = "litresearch"
 version = "0.1.0"
-description = "Academic Literature Analysis & Zotero PDF Compiler Utility"
+description = "Academic Literature Analysis"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -23,7 +23,7 @@ litresearch = "main:main"
 include = [
     "main.py",
     "paper_analyzer.py",
-    "zotero_report_generator.py",
+    "report_generator.py",
     "report_template.tex",
     "paper_item_template.tex",
 ]
