@@ -12,7 +12,7 @@
 
 Academic literature piles up in a surprising number of ways when you're writing a thesis. A PDF here, a citation there. Before you know it, you have a mountain of bibliography files, half of which are retracted or written by authors who aren't even active in the field anymore. None of it looks like a big deal when you download them one by one. But stack up fifty papers, and suddenly you have no idea what you're actually looking at.
 
-This project is a command-line tool that tries to solve that. You feed it a bibliography export from Zotero (or your preferred citation manager), and it queries external databases — OpenAlex, PubPeer, and OpenReview — to figure out citation counts, find potential retractions, check if any author is in the top 2% globally, and compile it all into a LaTeX PDF digest. Essentially, it says, *"Here are the papers you grabbed, here's what the academic community actually thinks of them, and here's who you should read first."*
+This project is a command-line tool that tries to solve that. You feed it a bibliography export (either CSL-JSON `.json` or BibTeX `.bib`) from Zotero or any other citation manager, and it queries external databases — OpenAlex, PubPeer, and OpenReview — to figure out citation counts, find potential retractions, check if any author is in the top 2% globally, and compile it all into a LaTeX PDF digest. Essentially, it says, *"Here are the papers you grabbed, here's what the academic community actually thinks of them, and here's who you should read first."*
 
 It's a literature auditing tool. The idea is to run it on your library, see which papers are solid, and structure your references before writing your actual thesis draft. It is an enrichment pipeline, and it'll tell you so — repeatedly, in the limitations section — because I'd rather you read the papers than be impressed by a compiled summary.
 
@@ -20,7 +20,7 @@ I did it because of my BSc thesis. This enriches the mess automatically.
 
 ## data
 
-The application relies on a sample Zotero bibliography JSON export (`bibliography.json`) and a massive Excel spreadsheet (`top_scientists_database.xlsx`) containing the top 2% most-cited scientists in the world. Since the `.xlsx` file is too large for GitHub, you'll need to download it separately and place it in the project root.
+The application relies on a sample bibliography export in either BibTeX (`bibliography.bib`) or CSL-JSON (`bibliography.json`) format and a massive Excel spreadsheet (`top_scientists_database.xlsx`) containing the top 2% most-cited scientists in the world. Since the `.xlsx` file is too large for GitHub, you'll need to download it separately and place it in the project root.
 
 The one-line version of the premise: a paper that looks amazing in your downloads folder might actually have a retraction warning or a low citation impact when cross-referenced. Low context alone, high clarity together. That's the whole idea.
 
@@ -47,9 +47,9 @@ So it's a researcher, working from a terminal, trying to filter a bibliography �
 
 Mental model first, bullets second. When you feed the tool your bibliography, here's the journey the data takes:
 
-**1. it parses the zotero export**
+**1. it parses the bibliography export**
 
-- The backend parses the bibliography JSON (`bibliography.json`).
+- The backend parses the bibliography JSON (`bibliography.json`) or BibTeX (`bibliography.bib`).
 - It maps the records into a structured HTML template, normalizing author names and titles to build a baseline list.
 
 **2. it queries academic apis**
@@ -81,9 +81,10 @@ Here is how the project files are laid out:
 |-------------|--------------|
 | `main.py` | the command-line entry point |
 | `paper_analyzer.py` | core module for querying apis, looking up authors, and compiling latex |
-| `zotero_report_generator.py` | parses zotero json files and turns them into html reports |
+| `zotero_report_generator.py` | parses JSON or BibTeX bibliography files and turns them into html reports |
 | `top_scientists_database.xlsx` | the massive author database (~89mb, must download separately due to github size limits) |
-| `bibliography.json` | a sample json export from zotero to test the tool |
+| `bibliography.json` | a sample json bibliography export to test the tool |
+| `bibliography.bib` | a sample BibTeX bibliography export to test the tool |
 | `report_template.tex` | the main latex template used to render the final pdf |
 | `paper_item_template.tex` | the snippet template for individual paper entries in the report |
 | `pyproject.toml` | package metadata and dependencies for uv |
@@ -102,10 +103,13 @@ That's it for the tool itself. If you want to compile the LaTeX reports to PDF, 
 
 ## how to run it
 
-You can run the entire pipeline (parsing, api lookups, excel search, and compiling the pdf) in a single command:
+You can run the entire pipeline (parsing, api lookups, excel search, and compiling the pdf) in a single command using either a BibTeX (`.bib`) file or a CSL-JSON (`.json`) file:
 
 ```bash
-# run the full pipeline
+# run the full pipeline using a BibTeX file
+litresearch run --bib bibliography.bib --clean
+
+# run the full pipeline using a JSON file
 litresearch run --json bibliography.json --clean
 ```
 
@@ -114,6 +118,10 @@ If you don't want to run the whole pipeline in one go, you can run the individua
 **1. generate the intermediate html report**
 
 ```bash
+# using a BibTeX file
+litresearch generate --bib bibliography.bib --html bibliography.html
+
+# using a JSON file
 litresearch generate --json bibliography.json --html bibliography.html
 ```
 

@@ -18,7 +18,7 @@ import argparse
 import sys
 import os
 
-from zotero_report_generator import generate_html
+from report_generator import generate_html
 from paper_analyzer import analyze_papers
 
 def main():
@@ -33,7 +33,7 @@ def main():
     print(banner)
 
     parser = argparse.ArgumentParser(
-        description="Academic Literature Analysis & Zotero PDF Compiler Utility"
+        description="Academic Literature Analysis & Bibliography PDF Compiler Utility"
     )
     
     subparsers = parser.add_subparsers(dest="command", required=True, help="Subcommands")
@@ -41,12 +41,17 @@ def main():
     # Subcommand 'generate'
     gen_parser = subparsers.add_parser(
         "generate", 
-        help="Convert raw bibliography JSON export to styled Zotero HTML report"
+        help="Convert raw bibliography JSON or BIB export to styled HTML report"
     )
     gen_parser.add_argument(
         "--json", 
         default="bibliography.json", 
-        help="Path to Zotero JSON export file (default: bibliography.json)"
+        help="Path to bibliography JSON export file (default: bibliography.json)"
+    )
+    gen_parser.add_argument(
+        "--bib",
+        default=None,
+        help="Path to bibliography.bib file"
     )
     gen_parser.add_argument(
         "--html", 
@@ -88,12 +93,17 @@ def main():
     # Subcommand 'run' (End-to-end pipeline)
     run_parser = subparsers.add_parser(
         "run", 
-        help="Run the complete pipeline end-to-end: JSON -> HTML -> TeX & PDF"
+        help="Run the complete pipeline end-to-end: JSON/BIB -> HTML -> TeX & PDF"
     )
     run_parser.add_argument(
         "--json", 
         default="bibliography.json", 
-        help="Path to input Zotero JSON export file (default: bibliography.json)"
+        help="Path to input bibliography JSON export file (default: bibliography.json)"
+    )
+    run_parser.add_argument(
+        "--bib",
+        default=None,
+        help="Path to input bibliography.bib file"
     )
     run_parser.add_argument(
         "--html", 
@@ -130,7 +140,8 @@ def main():
     
     try:
         if args.command == "generate":
-            success = generate_html(args.json, args.html)
+            input_path = args.bib if args.bib else args.json
+            success = generate_html(input_path, args.html)
             if not success:
                 sys.exit(1)
                 
@@ -147,8 +158,9 @@ def main():
                 
         elif args.command == "run":
             try:
-                print(">>> Phase 1/2: Generating HTML Report from Zotero JSON Export...")
-                success = generate_html(args.json, args.html)
+                print(">>> Phase 1/2: Generating HTML Report...")
+                input_path = args.bib if args.bib else args.json
+                success = generate_html(input_path, args.html)
                 if not success:
                     print("Failed at Phase 1: HTML generation.")
                     sys.exit(1)
