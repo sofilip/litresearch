@@ -87,7 +87,6 @@ When reviewing generated PDF summaries, you can highlight important text directl
 - A clean, compiled LaTeX PDF report showing all paper metrics, highlighted authors, and preserved PDF highlight annotations
 - A parsed bibliography HTML file that serves as an intermediate report
 - A cached names list file (`xlsx_names_cache.txt`) that speeds up subsequent author lookups
-- A persistent highlight cache file (`.pdf_highlights_cache.json`) that preserves user annotations across document rebuilds
 
 ## directory structure
 
