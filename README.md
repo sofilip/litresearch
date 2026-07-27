@@ -32,12 +32,13 @@ Formally: a user gives it a bibliography export and the top scientists database,
 - feedback markers from PubPeer that flag if a paper has comments or public concerns
 - review details from OpenReview to show how the paper fared in peer review
 - highlighted names for any author who actually matches the top 2% scientist database
+- **native PDF highlight persistence** that intelligently preserves and re-applies user highlight annotations across document regenerations
 
 ## user model
 
 Worth being clear about who the imagined users are, because it shapes everything:
 
-- **what researchers can do:** run automated checks on citation counts, find retractions, and flag top authors without visiting dozens of Ibsites
+- **what researchers can do:** run automated checks on citation counts, find retractions, flag top authors, and preserve PDF text highlights across report builds without visiting dozens of websites
 - **what supervisors get:** a clean, formatted LaTeX PDF summary that cuts straight to the high-impact papers and filters out the fluff
 - **what you're trying to win:** time. stop reading papers that have been debunked or ignored by the community
 
@@ -62,16 +63,31 @@ Mental model first, bullets second. When you feed the tool your bibliography, he
 - It scans the massive `top_scientists_database.xlsx` using a low-memory streaming XML reader (`iterparse`).
 - It flags any matches where a paper author is in the top 2% career-citation database.
 
-**4. it compiles the latex report**
+**4. it checks and extracts existing pdf highlights**
+
+- Before `pdflatex` compilation, it checks if an existing PDF contains native highlight annotations.
+- It extracts highlighted text using precise word center-point filtering (`(x_center, y_center)`), ensuring exact text boundaries without capturing surrounding margins or words.
+
+**5. it compiles the latex report and re-applies highlights**
 
 - The collected metrics and matches are injected into `report_template.tex` and `paper_item_template.tex`.
 - It runs `pdflatex` to output a compiled PDF digest.
+- If highlights were detected in previous versions, it re-anchors and re-applies them to the newly generated PDF as native annotation objects via quad geometry (`fitz.Quad`).
+
+## pdf highlight persistence
+
+When reviewing generated PDF summaries, you can highlight important text directly in your PDF viewer. The `litresearch` pipeline intelligently handles these annotations:
+
+- **PDF-Native Annotations:** Highlights are applied exclusively to the final PDF file as native PDF annotation objects. Source HTML and LaTeX markup remain 100% clean.
+- **Precise Re-anchoring:** Uses `PyMuPDF` (`fitz`) quad polygon geometry (`fitz.Quad`) to re-anchor highlights onto newly compiled documents with exact line alignment.
+- **Annotation Synchronization:** Highlight annotations deleted in your PDF reader are automatically updated in `.pdf_highlights_cache.json`, preventing deleted highlights or yellow "stains" from persisting on future builds.
 
 ## what you get out the other end
 
-- A clean, compiled LaTeX PDF report showing all paper metrics and highlighted authors
+- A clean, compiled LaTeX PDF report showing all paper metrics, highlighted authors, and preserved PDF highlight annotations
 - A parsed bibliography HTML file that serves as an intermediate report
 - A cached names list file (`xlsx_names_cache.txt`) that speeds up subsequent author lookups
+- A persistent highlight cache file (`.pdf_highlights_cache.json`) that preserves user annotations across document rebuilds
 
 ## directory structure
 

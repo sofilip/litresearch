@@ -7,3 +7,4 @@ arxiv
 requests
 pyperclip
 pyTelegramBotAPI
+pymupdf

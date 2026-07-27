@@ -11,6 +11,7 @@
 #     "requests",
 #     "pyperclip",
 #     "pyTelegramBotAPI",
+#     "pymupdf",
 # ]
 # ///
 
@@ -45,8 +46,8 @@ def main():
     )
     gen_parser.add_argument(
         "--json", 
-        default="bibliography.json", 
-        help="Path to bibliography JSON export file (default: bibliography.json)"
+        default="privacy.json", 
+        help="Path to bibliography JSON export file (default: privacy.json)"
     )
     gen_parser.add_argument(
         "--bib",
@@ -97,8 +98,8 @@ def main():
     )
     run_parser.add_argument(
         "--json", 
-        default="bibliography.json", 
-        help="Path to input bibliography JSON export file (default: bibliography.json)"
+        default="privacy.json", 
+        help="Path to input bibliography JSON export file (default: privacy.json)"
     )
     run_parser.add_argument(
         "--bib",

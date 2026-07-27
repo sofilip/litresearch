@@ -4,6 +4,7 @@ import os
 import re
 
 
+
 FIELD_MAPPING = {
     'title-short': 'Short Title',
     'language': 'Language',
@@ -420,6 +421,7 @@ def generate_html(json_filepath="bibliography.json", output_filename="bibliograp
         # 3. Abstract
         if 'abstract' in item and item['abstract']:
             html_content += f'\t\t\t\t\t<tr>\n\t\t\t\t\t<th>Abstract</th>\n\t\t\t\t\t\t<td>{item["abstract"]}</td>\n\t\t\t\t\t</tr>\n'
+
 
         # 4. Date (issued)
         if 'issued' in item:

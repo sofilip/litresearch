@@ -19,11 +19,17 @@ ALLOWED_FIELDS = {
     'Citation Key', 'Archive ID'
 }
 
+try:
+    import fitz
+except ImportError:
+    fitz = None
+
 # --- Cache variables ---
 pubpeer_cache = {}
 author_hindex_cache = {}
 excel_author_data = {}
 OPENREVIEW_CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'openreview_cache.json')
+HIGHLIGHT_CACHE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.pdf_highlights_cache.json')
 
 # Helper Functions
 def escape_latex(text):
@@ -531,11 +537,203 @@ def extract_date(item):
     return datetime.datetime(1900, 1, 1)
 
 
+# --- PDF Highlights Extraction & Transfer ---
+def load_pdf_highlights_cache():
+    if os.path.exists(HIGHLIGHT_CACHE_FILE):
+        try:
+            with open(HIGHLIGHT_CACHE_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception:
+            return []
+    return []
+
+def save_pdf_highlights_cache(highlights):
+    try:
+        with open(HIGHLIGHT_CACHE_FILE, 'w', encoding='utf-8') as f:
+            json.dump(highlights, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"Error saving PDF highlights cache: {e}")
+
+def extract_pdf_highlights(pdf_path):
+    if not fitz or not os.path.exists(pdf_path):
+        return []
+    highlights = []
+    try:
+        doc = fitz.open(pdf_path)
+        for page_num, page in enumerate(doc):
+            annots = list(page.annots() or [])
+            for annot in annots:
+                annot_type = annot.type[0] if isinstance(annot.type, (tuple, list)) else annot.type
+                if annot_type == 8 or (hasattr(fitz, "PDF_ANNOT_HIGHLIGHT") and annot_type == fitz.PDF_ANNOT_HIGHLIGHT):
+                    verts = annot.vertices
+                    quads = []
+                    if verts and len(verts) >= 4:
+                        for i in range(0, len(verts), 4):
+                            if i + 3 < len(verts):
+                                try:
+                                    quads.append(fitz.Quad(verts[i], verts[i+1], verts[i+2], verts[i+3]))
+                                except Exception:
+                                    pass
+                    
+                    words = page.get_text("words")
+                    highlighted_words = []
+                    for w in words:
+                        # w is (x0, y0, x1, y1, word_str, ...)
+                        pt = fitz.Point((w[0] + w[2]) / 2.0, (w[1] + w[3]) / 2.0)
+                        inside = False
+                        if quads:
+                            for q in quads:
+                                if q.rect.contains(pt):
+                                    inside = True
+                                    break
+                        else:
+                            if annot.rect.contains(pt):
+                                inside = True
+                                
+                        if inside:
+                            highlighted_words.append(w[4])
+                            
+                    if highlighted_words:
+                        text = " ".join(highlighted_words)
+                    else:
+                        text = page.get_text("text", clip=annot.rect).strip()
+                        
+                    clean_text = " ".join(text.split())
+                    if not clean_text or len(clean_text) < 3:
+                        continue
+                        
+                    colors = annot.colors or {}
+                    color = colors.get("stroke") if isinstance(colors, dict) else [1.0, 1.0, 0.0]
+                    if not color:
+                        color = [1.0, 1.0, 0.0]
+                    info = annot.info or {}
+                    info_clean = {
+                        "content": info.get("content", ""),
+                        "title": info.get("title", ""),
+                        "subject": info.get("subject", "")
+                    }
+                    highlights.append({
+                        "source_file": os.path.basename(pdf_path),
+                        "page_num": page_num,
+                        "text": text,
+                        "clean_text": clean_text,
+                        "color": list(color),
+                        "info": info_clean
+                    })
+        doc.close()
+    except Exception as e:
+        print(f"Warning: Could not extract highlights from {pdf_path}: {e}")
+    return highlights
+
+def collect_all_pdf_highlights(target_pdf_filename=None):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    pdf_files_to_check = []
+    
+    if target_pdf_filename and os.path.exists(target_pdf_filename):
+        pdf_files_to_check.append(os.path.abspath(target_pdf_filename))
+        
+    for p in glob.glob(os.path.join(script_dir, "*.pdf")):
+        abs_p = os.path.abspath(p)
+        if abs_p not in pdf_files_to_check and not abs_p.endswith(".highlight_tmp.pdf"):
+            pdf_files_to_check.append(abs_p)
+
+    all_highlights = []
+    seen_texts = set()
+    for pdf_path in pdf_files_to_check:
+        extracted = extract_pdf_highlights(pdf_path)
+        for h in extracted:
+            ct = h.get("clean_text")
+            if ct and ct not in seen_texts:
+                seen_texts.add(ct)
+                all_highlights.append(h)
+                
+    save_pdf_highlights_cache(all_highlights)
+    return all_highlights
+
+def reapply_highlights_to_pdf(pdf_path, highlights):
+    if not fitz or not os.path.exists(pdf_path) or not highlights:
+        return 0
+    try:
+        doc = fitz.open(pdf_path)
+    except Exception as e:
+        print(f"Error opening new PDF to re-apply highlights: {e}")
+        return 0
+        
+    applied_count = 0
+    for hl in highlights:
+        clean_text = hl.get("clean_text")
+        if not clean_text or len(clean_text) < 3:
+            continue
+            
+        color = hl.get("color", [1.0, 1.0, 0.0])
+        info = hl.get("info", {})
+        pref_page = hl.get("page_num", 0)
+        
+        pages_to_check = []
+        if 0 <= pref_page < len(doc):
+            pages_to_check.append(doc[pref_page])
+        for p_idx, page in enumerate(doc):
+            if page not in pages_to_check:
+                pages_to_check.append(page)
+                
+        highlight_added = False
+        for page in pages_to_check:
+            # Search for exact full clean_text
+            quads = page.search_for(clean_text, quads=True)
+            if not quads and len(clean_text) > 30:
+                # If exact clean_text failed, try searching for the longest matching sentence prefix/phrase
+                sentences = [s.strip() for s in re.split(r'[\.\n;]', clean_text) if len(s.strip()) >= 25]
+                if sentences:
+                    # Search for the longest sentence to avoid over-highlighting multiple fragments
+                    sentences.sort(key=len, reverse=True)
+                    for s in sentences:
+                        s_quads = page.search_for(s, quads=True)
+                        if s_quads:
+                            quads = s_quads
+                            break
+            if quads:
+                try:
+                    annot = page.add_highlight_annot(quads)
+                    annot.set_colors(stroke=color)
+                    if info:
+                        annot.set_info(info)
+                    annot.update()
+                    applied_count += 1
+                    highlight_added = True
+                    break
+                except Exception as e:
+                    print(f"Warning: Failed to set highlight annotation: {e}")
+
+    if applied_count > 0:
+        tmp_path = pdf_path + ".highlight_tmp.pdf"
+        try:
+            doc.save(tmp_path)
+            doc.close()
+            os.replace(tmp_path, pdf_path)
+        except Exception as e:
+            print(f"Error saving highlighted PDF: {e}")
+            if os.path.exists(tmp_path):
+                try: os.remove(tmp_path)
+                except: pass
+    else:
+        doc.close()
+        
+    return applied_count
+
+
+
 # Main Execution Function
 def analyze_papers(input_filename='bibliography.html', output_filename='bibliography.tex', excel_path=None, report_template_path=None, paper_item_template_path=None):
     global excel_author_data
     
     script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Check for existing PDF highlights before compilation starts
+    pdf_filename = os.path.splitext(output_filename)[0] + ".pdf"
+    print("Checking for existing PDF highlights before report compilation...")
+    cached_highlights = collect_all_pdf_highlights(target_pdf_filename=pdf_filename)
+    if cached_highlights:
+        print(f"Found {len(cached_highlights)} highlight(s) from older PDF files / cache to preserve.")
     
     # Resolve paths
     if not report_template_path:
@@ -854,6 +1052,13 @@ def analyze_papers(input_filename='bibliography.html', output_filename='bibliogr
     pdf_filename = os.path.splitext(output_filename)[0] + ".pdf"
     if os.path.exists(pdf_filename):
         print("Success! Your PDF with the Executive Summary is ready.")
+        if cached_highlights:
+            print(f"Re-applying highlights to {pdf_filename}...")
+            transferred_count = reapply_highlights_to_pdf(pdf_filename, cached_highlights)
+            if transferred_count > 0:
+                print(f"Successfully transferred {transferred_count} highlight(s) to the new PDF!")
+            else:
+                print("Warning: Could not re-apply highlights automatically (text match not found in new layout).")
     else:
         print("Error: PDF was not generated. Check LaTeX warnings/errors.")
         return False
