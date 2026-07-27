@@ -78,9 +78,9 @@ Mental model first, bullets second. When you feed the tool your bibliography, he
 
 When reviewing generated PDF summaries, you can highlight important text directly in your PDF viewer. The `litresearch` pipeline intelligently handles these annotations:
 
-- **PDF-Native Annotations:** Highlights are applied exclusively to the final PDF file as native PDF annotation objects. Source HTML and LaTeX markup remain 100% clean.
-- **Precise Re-anchoring:** Uses `PyMuPDF` (`fitz`) quad polygon geometry (`fitz.Quad`) to re-anchor highlights onto newly compiled documents with exact line alignment.
-- **Annotation Synchronization:** Highlight annotations deleted in your PDF reader are automatically updated in `.pdf_highlights_cache.json`, preventing deleted highlights or yellow "stains" from persisting on future builds.
+- Highlights are applied exclusively to the final PDF file as native PDF annotation objects. Source HTML and LaTeX markup remain 100% clean
+- Uses `PyMuPDF` (`fitz`) quad polygon geometry (`fitz.Quad`) to re-anchor highlights onto newly compiled documents with exact line alignment
+- Highlight annotations deleted in your PDF reader are automatically updated in `.pdf_highlights_cache.json`, preventing deleted highlights
 
 ## what you get out the other end
 
