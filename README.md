@@ -34,7 +34,7 @@ Formally: a user gives it a bibliography export and the top scientists database,
 - highlighted names for any author who actually matches the top 2% scientist database
 - **native PDF highlight persistence** that intelligently preserves and re-applies user highlight annotations across document regenerations
 
-![LaTeX PDF Digest Summary](assets/1.pdf)
+![LaTeX PDF Digest Summary](assets/1.png)
 
 ## user model
 
