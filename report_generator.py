@@ -81,6 +81,7 @@ def remove_bibtex_case_braces(text):
         if re.search(r'\\[a-zA-Z]+$', prefix) or re.search(r'[_^]$', prefix):
             return m.group(0)
         return m.group(1)
+
     prev = None
     curr = text
     while prev != curr:
@@ -91,9 +92,8 @@ def remove_bibtex_case_braces(text):
 def clean_bib_value(val):
     if not isinstance(val, str):
         return val
-
-	val = re.sub(r'\\textbackslash(?:\s+|$)', r'\\', val)
-
+    # Handle \textbackslash followed by space (common Zotero BibTeX export for backslashes)
+    val = re.sub(r'\\textbackslash(?:\s+|$)', r'\\', val)
     # Common LaTeX accents / characters mapping
     replacements = {
         '\\textbraceleft': '{',
@@ -127,6 +127,8 @@ def clean_bib_value(val):
     # Normalize spaces
     val = re.sub(r'\s+', ' ', val).strip()
     return val
+
+
 
 
 def parse_bib_file(filepath):
