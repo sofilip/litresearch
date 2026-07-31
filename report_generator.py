@@ -74,16 +74,31 @@ MONTH_MAP = {
     'dec': 12, 'december': 12, '12': 12,
 }
 
+def remove_bibtex_case_braces(text):
+    def repl(m):
+        start_idx = m.start()
+        prefix = text[:start_idx]
+        if re.search(r'\\[a-zA-Z]+$', prefix) or re.search(r'[_^]$', prefix):
+            return m.group(0)
+        return m.group(1)
+    prev = None
+    curr = text
+    while prev != curr:
+        prev = curr
+        curr = re.sub(r'\{([^{}]+)\}', repl, curr)
+    return curr
+
 def clean_bib_value(val):
     if not isinstance(val, str):
         return val
+
+	val = re.sub(r'\\textbackslash(?:\s+|$)', r'\\', val)
+
     # Common LaTeX accents / characters mapping
     replacements = {
         '\\textbraceleft': '{',
         '\\textbraceright': '}',
-        '\\textbackslash': '\\',
         '\\textbar': '|',
-        '\\tau': 'τ',
         '\\%': '%',
         '\\_': '_',
         '\\&': '&',
@@ -107,8 +122,8 @@ def clean_bib_value(val):
     }
     for latex, unicode_char in replacements.items():
         val = val.replace(latex, unicode_char)
-    # Remove curly braces used for case preservation (like {{Title}} or {T}itle)
-    val = val.replace('{', '').replace('}', '')
+    # Remove curly braces used for case preservation (like {{Title}} or {T}itle) without destroying commands
+    val = remove_bibtex_case_braces(val)
     # Normalize spaces
     val = re.sub(r'\s+', ' ', val).strip()
     return val
