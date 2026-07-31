@@ -37,9 +37,11 @@ def escape_latex(text):
         return text
     # Remove control characters except tab and newline/carriage return
     text = "".join(c for c in text if c.isprintable() or c in "\n\r\t")
+    
     # Regex patterns to detect math mode and pre-formatted LaTeX commands
     math_pattern = re.compile(r'(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|\$\$[\s\S]*?\$\$|\$(?:\\\$|[^$])+\$)')
     latex_cmd_pattern = re.compile(r'(\\(?:textit|textbf|textsf|textrm|textsc|emph|url|href|textcolor|hyperref|ref|pageref)(?:\{[^{}]*\})*)')
+
     unicode_math_map = {
         'τ': r'\tau',
         'α': r'\alpha',
@@ -61,6 +63,7 @@ def escape_latex(text):
         '—': '-',
         '–': '-',
     }
+
     unicode_text_conv = {
         '&': r'\&', '%': r'\%', '$': r'\$', '#': r'\#', '_': r'\_',
         '{': r'\{', '}': r'\}', '~': r'\textasciitilde{}', 
@@ -93,9 +96,9 @@ def escape_latex(text):
     }
     regex_text = re.compile('|'.join(re.escape(str(key)) for key in sorted(unicode_text_conv.keys(), key=lambda item: -len(item))))
 
-
     def escape_plain_text(s):
         return regex_text.sub(lambda match: unicode_text_conv[match.group()], s)
+
     def process_math_content(m_str):
         if m_str.startswith(r'\(') or m_str.startswith(r'\['):
             prefix, content, suffix = m_str[:2], m_str[2:-2], m_str[-2:]
@@ -110,6 +113,8 @@ def escape_latex(text):
                     return lcmd + nxt
                 m_str = re.sub(re.escape(uchar) + r'([a-zA-Z]?)', repl, m_str)
         return m_str
+
+
     tokens = math_pattern.split(text)
     result = []
     for token in tokens:
@@ -127,6 +132,7 @@ def escape_latex(text):
                 else:
                     result.append(escape_plain_text(st))
     return "".join(result)
+
 
 def fetch_pubpeer_data(clean_doi):
     if not clean_doi:
@@ -428,9 +434,8 @@ def load_cache_file(cache_path):
                     excel_data[parts[0]] = (parts[1], parts[2], parts[3])
                 elif len(parts) == 1 and parts[0]:
                     excel_data[parts[0]] = ('N/A', 'N/A', 'N/A')
-        print(f"Successfully loaded {len(excel_data)} author entries from cache !")
+        print(f"Successfully loaded {len(excel_data)} author entries from cache.")
         return excel_data
-
     except Exception as e:
         print(f"Error loading cache file '{cache_path}': {e}")
         return {}
@@ -451,6 +456,7 @@ def load_excel_names(excel_path=None):
         if os.path.exists(p):
             existing_cache_path = p
             break
+
     # 2. Find xlsx file
     xlsx_path = None
     if excel_path:
@@ -462,6 +468,7 @@ def load_excel_names(excel_path=None):
             xlsx_files = [f for f in glob.glob(os.path.join(script_dir, '*.xlsx')) if not os.path.basename(f).startswith('~$')]
         if xlsx_files:
             xlsx_path = os.path.abspath(xlsx_files[0])
+
     # 3. If xlsx file exists
     if xlsx_path and os.path.exists(xlsx_path):
         print(f"Using Excel file: {xlsx_path}")
@@ -530,10 +537,12 @@ def load_excel_names(excel_path=None):
                 print("Falling back to existing cache file...")
                 return load_cache_file(existing_cache_path)
             return {}
+
     # 4. If xlsx file is NOT found
     if existing_cache_path:
         print(f"No .xlsx file found. Using cached names from: {existing_cache_path}")
         return load_cache_file(existing_cache_path)
+
     print("No .xlsx file or xlsx_names_cache.txt found. Skipping author name matching.")
     return {}
 
