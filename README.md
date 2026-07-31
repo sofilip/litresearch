@@ -84,7 +84,7 @@ When reviewing generated PDF summaries, you can highlight important text directl
 - Uses `PyMuPDF` (`fitz`) quad polygon geometry (`fitz.Quad`) to re-anchor highlights onto newly compiled documents with exact line alignment
 - Highlight annotations deleted in your PDF reader are automatically updated in `.pdf_highlights_cache.json`, preventing deleted highlights
 
-![PDF Highlight Persistence Example](assets/2.pdf)
+![PDF Highlight Persistence Example](assets/2.png)
 
 ## what you get out the other end
 
@@ -92,7 +92,7 @@ When reviewing generated PDF summaries, you can highlight important text directl
 - A parsed bibliography HTML file that serves as an intermediate report
 - A cached names list file (`xlsx_names_cache.txt`) that speeds up subsequent author lookups
 
-![Detailed Paper Entry and Metrics Output](assets/3.pdf)
+![Detailed Paper Entry and Metrics Output](assets/3.png)
 
 ## directory structure
 
