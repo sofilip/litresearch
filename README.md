@@ -34,6 +34,8 @@ Formally: a user gives it a bibliography export and the top scientists database,
 - highlighted names for any author who actually matches the top 2% scientist database
 - **native PDF highlight persistence** that intelligently preserves and re-applies user highlight annotations across document regenerations
 
+![LaTeX PDF Digest Summary](assets/1.png)
+
 ## user model
 
 Worth being clear about who the imagined users are, because it shapes everything:
@@ -82,11 +84,15 @@ When reviewing generated PDF summaries, you can highlight important text directl
 - Uses `PyMuPDF` (`fitz`) quad polygon geometry (`fitz.Quad`) to re-anchor highlights onto newly compiled documents with exact line alignment
 - Highlight annotations deleted in your PDF reader are automatically updated in `.pdf_highlights_cache.json`, preventing deleted highlights
 
+![PDF Highlight Persistence Example](assets/2.png)
+
 ## what you get out the other end
 
 - A clean, compiled LaTeX PDF report showing all paper metrics, highlighted authors, and preserved PDF highlight annotations
 - A parsed bibliography HTML file that serves as an intermediate report
 - A cached names list file (`xlsx_names_cache.txt`) that speeds up subsequent author lookups
+
+![Detailed Paper Entry and Metrics Output](assets/3.png)
 
 ## directory structure
 
@@ -94,6 +100,7 @@ Here is how the project files are laid out:
 
 | folder/file | what it does |
 |-------------|--------------|
+| `assets/` | contains preview screenshots and figures for the documentation |
 | `main.py` | the command-line entry point |
 | `paper_analyzer.py` | core module for querying apis, looking up authors, and compiling latex |
 | `zotero_report_generator.py` | parses JSON or BibTeX bibliography files and turns them into html reports |
