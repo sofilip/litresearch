@@ -37,7 +37,31 @@ def escape_latex(text):
         return text
     # Remove control characters except tab and newline/carriage return
     text = "".join(c for c in text if c.isprintable() or c in "\n\r\t")
-    conv = {
+    # Regex patterns to detect math mode and pre-formatted LaTeX commands
+    math_pattern = re.compile(r'(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|\$\$[\s\S]*?\$\$|\$(?:\\\$|[^$])+\$)')
+    latex_cmd_pattern = re.compile(r'(\\(?:textit|textbf|textsf|textrm|textsc|emph|url|href|textcolor|hyperref|ref|pageref)(?:\{[^{}]*\})*)')
+    unicode_math_map = {
+        'τ': r'\tau',
+        'α': r'\alpha',
+        'β': r'\beta',
+        'γ': r'\gamma',
+        'μ': r'\mu',
+        'λ': r'\lambda',
+        'π': r'\pi',
+        'θ': r'\theta',
+        'σ': r'\sigma',
+        'Ω': r'\Omega',
+        'Δ': r'\Delta',
+        'ε': r'\epsilon',
+        '∗': r'\ast',
+        '∼': r'\sim',
+        '≥': r'\ge',
+        '≤': r'\le',
+        '±': r'\pm',
+        '—': '-',
+        '–': '-',
+    }
+    unicode_text_conv = {
         '&': r'\&', '%': r'\%', '$': r'\$', '#': r'\#', '_': r'\_',
         '{': r'\{', '}': r'\}', '~': r'\textasciitilde{}', 
         '^': r'\textasciicircum{}', '\\': r'\textbackslash{}',
@@ -67,8 +91,42 @@ def escape_latex(text):
         '—': '---',
         '*': r'\ensuremath{\ast}',
     }
-    regex = re.compile('|'.join(re.escape(str(key)) for key in sorted(conv.keys(), key=lambda item: -len(item))))
-    return regex.sub(lambda match: conv[match.group()], text)
+    regex_text = re.compile('|'.join(re.escape(str(key)) for key in sorted(unicode_text_conv.keys(), key=lambda item: -len(item))))
+
+
+    def escape_plain_text(s):
+        return regex_text.sub(lambda match: unicode_text_conv[match.group()], s)
+    def process_math_content(m_str):
+        if m_str.startswith(r'\(') or m_str.startswith(r'\['):
+            prefix, content, suffix = m_str[:2], m_str[2:-2], m_str[-2:]
+            content = content.replace('$', '')
+            m_str = prefix + content + suffix
+        for uchar, lcmd in unicode_math_map.items():
+            if uchar in m_str:
+                def repl(m):
+                    nxt = m.group(1)
+                    if nxt and nxt.isalpha():
+                        return lcmd + ' ' + nxt
+                    return lcmd + nxt
+                m_str = re.sub(re.escape(uchar) + r'([a-zA-Z]?)', repl, m_str)
+        return m_str
+    tokens = math_pattern.split(text)
+    result = []
+    for token in tokens:
+        if not token:
+            continue
+        if math_pattern.fullmatch(token):
+            result.append(process_math_content(token))
+        else:
+            sub_tokens = latex_cmd_pattern.split(token)
+            for st in sub_tokens:
+                if not st:
+                    continue
+                if latex_cmd_pattern.fullmatch(st):
+                    result.append(st)
+                else:
+                    result.append(escape_plain_text(st))
+    return "".join(result)
 
 def fetch_pubpeer_data(clean_doi):
     if not clean_doi:
@@ -359,32 +417,10 @@ def normalize_name(name):
     name = re.sub(r'[^\w\s]', ' ', name)
     return " ".join(name.split())
 
-def load_excel_names(excel_path=None):
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    if not excel_path:
-        xlsx_files = [f for f in glob.glob(os.path.join(os.getcwd(), '*.xlsx')) if not os.path.basename(f).startswith('~$')]
-        if not xlsx_files:
-            xlsx_files = [f for f in glob.glob(os.path.join(script_dir, '*.xlsx')) if not os.path.basename(f).startswith('~$')]
-        if not xlsx_files:
-            print("No .xlsx file found in current working directory or script directory.")
-            return {}
-        xlsx_path = xlsx_files[0]
-    else:
-        xlsx_path = excel_path
-
-    if not os.path.exists(xlsx_path):
-        print(f"Error: Excel file does not exist at '{xlsx_path}'")
-        return {}
-
-    xlsx_name = os.path.basename(xlsx_path)
-    print(f"Using Excel file: {xlsx_path}")
-    
-    xlsx_dir = os.path.dirname(os.path.abspath(xlsx_path))
-    cache_path = os.path.join(xlsx_dir, 'xlsx_names_cache.txt')
-    
-    if os.path.exists(cache_path) and os.path.getmtime(cache_path) >= os.path.getmtime(xlsx_path):
-        print("Loading author names from cache...")
-        excel_data = {}
+def load_cache_file(cache_path):
+    print(f"Loading author names from cache file: '{cache_path}'...")
+    excel_data = {}
+    try:
         with open(cache_path, 'r', encoding='utf-8') as f:
             for line in f:
                 parts = line.strip('\n').split('\t')
@@ -392,63 +428,115 @@ def load_excel_names(excel_path=None):
                     excel_data[parts[0]] = (parts[1], parts[2], parts[3])
                 elif len(parts) == 1 and parts[0]:
                     excel_data[parts[0]] = ('N/A', 'N/A', 'N/A')
+        print(f"Successfully loaded {len(excel_data)} author entries from cache !")
         return excel_data
-            
-    print("Cache invalid or missing. Parsing Excel file (this might take a while on the first run)...")
-    t0 = time.time()
-    excel_data = {}
-    ns = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
-    row_tag = f'{{{ns}}}row'
-    
-    try:
-        with zipfile.ZipFile(xlsx_path, 'r') as z:
-            with z.open('xl/worksheets/sheet2.xml', 'r') as f:
-                for event, elem in ET.iterparse(f, events=('end',)):
-                    if elem.tag == row_tag:
-                        cells = elem.findall(f'{{{ns}}}c')
-                        cell_dict = {}
-                        for cell in cells:
-                            r = cell.get('r')
-                            if r:
-                                col = ''.join([char for char in r if char.isalpha()])
-                                cell_dict[col] = cell
-                                
-                        if 'A' in cell_dict:
-                            a_cell = cell_dict['A']
-                            t_elem = a_cell.find(f'.//{{{ns}}}t')
-                            if t_elem is not None and t_elem.text:
-                                raw_name = t_elem.text
-                                norm = normalize_name(raw_name)
-                                if norm and norm != 'authfull':
-                                    works = 'N/A'
-                                    citations = 'N/A'
-                                    h_index = 'N/A'
-                                    
-                                    if 'D' in cell_dict:
-                                        v_elem = cell_dict['D'].find(f'{{{ns}}}v')
-                                        if v_elem is not None and v_elem.text:
-                                            works = v_elem.text
-                                    if 'W' in cell_dict:
-                                        v_elem = cell_dict['W'].find(f'{{{ns}}}v')
-                                        if v_elem is not None and v_elem.text:
-                                            citations = v_elem.text
-                                    if 'X' in cell_dict:
-                                        v_elem = cell_dict['X'].find(f'{{{ns}}}v')
-                                        if v_elem is not None and v_elem.text:
-                                            h_index = v_elem.text
-                                            
-                                    excel_data[norm] = (works, citations, h_index)
-                        elem.clear()
-        
-        with open(cache_path, 'w', encoding='utf-8') as f:
-            for name, stats in sorted(excel_data.items()):
-                f.write(f"{name}\t{stats[0]}\t{stats[1]}\t{stats[2]}\n")
-                
-        print(f"Excel parsing completed in {time.time() - t0:.2f}s. Cache saved.")
-        return excel_data
+
     except Exception as e:
-        print(f"Error parsing Excel file: {e}")
+        print(f"Error loading cache file '{cache_path}': {e}")
         return {}
+
+def load_excel_names(excel_path=None):
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    cwd_dir = os.getcwd()
+    
+    # 1. Determine potential xlsx_names_cache.txt paths
+    cache_paths = []
+    if excel_path:
+        cache_paths.append(os.path.join(os.path.dirname(os.path.abspath(excel_path)), 'xlsx_names_cache.txt'))
+    cache_paths.append(os.path.join(cwd_dir, 'xlsx_names_cache.txt'))
+    cache_paths.append(os.path.join(script_dir, 'xlsx_names_cache.txt'))
+    
+    existing_cache_path = None
+    for p in cache_paths:
+        if os.path.exists(p):
+            existing_cache_path = p
+            break
+    # 2. Find xlsx file
+    xlsx_path = None
+    if excel_path:
+        if os.path.exists(excel_path):
+            xlsx_path = os.path.abspath(excel_path)
+    else:
+        xlsx_files = [f for f in glob.glob(os.path.join(cwd_dir, '*.xlsx')) if not os.path.basename(f).startswith('~$')]
+        if not xlsx_files:
+            xlsx_files = [f for f in glob.glob(os.path.join(script_dir, '*.xlsx')) if not os.path.basename(f).startswith('~$')]
+        if xlsx_files:
+            xlsx_path = os.path.abspath(xlsx_files[0])
+    # 3. If xlsx file exists
+    if xlsx_path and os.path.exists(xlsx_path):
+        print(f"Using Excel file: {xlsx_path}")
+        xlsx_dir = os.path.dirname(xlsx_path)
+        target_cache_path = os.path.join(xlsx_dir, 'xlsx_names_cache.txt')
+        
+        # Check if cache exists and is newer than xlsx file
+        if os.path.exists(target_cache_path) and os.path.getmtime(target_cache_path) >= os.path.getmtime(xlsx_path):
+            return load_cache_file(target_cache_path)
+            
+        print("Cache invalid or missing. Parsing Excel file (this might take a while on the first run)...")
+        t0 = time.time()
+        excel_data = {}
+        ns = 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'
+        row_tag = f'{{{ns}}}row'
+        
+        try:
+            with zipfile.ZipFile(xlsx_path, 'r') as z:
+                with z.open('xl/worksheets/sheet2.xml', 'r') as f:
+                    for event, elem in ET.iterparse(f, events=('end',)):
+                        if elem.tag == row_tag:
+                            cells = elem.findall(f'{{{ns}}}c')
+                            cell_dict = {}
+                            for cell in cells:
+                                r = cell.get('r')
+                                if r:
+                                    col = ''.join([char for char in r if char.isalpha()])
+                                    cell_dict[col] = cell
+                                    
+                            if 'A' in cell_dict:
+                                a_cell = cell_dict['A']
+                                t_elem = a_cell.find(f'.//{{{ns}}}t')
+                                if t_elem is not None and t_elem.text:
+                                    raw_name = t_elem.text
+                                    norm = normalize_name(raw_name)
+                                    if norm and norm != 'authfull':
+                                        works = 'N/A'
+                                        citations = 'N/A'
+                                        h_index = 'N/A'
+                                        
+                                        if 'D' in cell_dict:
+                                            v_elem = cell_dict['D'].find(f'{{{ns}}}v')
+                                            if v_elem is not None and v_elem.text:
+                                                works = v_elem.text
+                                        if 'W' in cell_dict:
+                                            v_elem = cell_dict['W'].find(f'{{{ns}}}v')
+                                            if v_elem is not None and v_elem.text:
+                                                citations = v_elem.text
+                                        if 'X' in cell_dict:
+                                            v_elem = cell_dict['X'].find(f'{{{ns}}}v')
+                                            if v_elem is not None and v_elem.text:
+                                                h_index = v_elem.text
+                                                
+                                        excel_data[norm] = (works, citations, h_index)
+                            elem.clear()
+            
+            with open(target_cache_path, 'w', encoding='utf-8') as f:
+                for name, stats in sorted(excel_data.items()):
+                    f.write(f"{name}\t{stats[0]}\t{stats[1]}\t{stats[2]}\n")
+                    
+            print(f"Excel parsing completed in {time.time() - t0:.2f}s. Cache saved to '{target_cache_path}'.")
+            return excel_data
+        except Exception as e:
+            print(f"Error parsing Excel file: {e}")
+            if existing_cache_path:
+                print("Falling back to existing cache file...")
+                return load_cache_file(existing_cache_path)
+            return {}
+    # 4. If xlsx file is NOT found
+    if existing_cache_path:
+        print(f"No .xlsx file found. Using cached names from: {existing_cache_path}")
+        return load_cache_file(existing_cache_path)
+    print("No .xlsx file or xlsx_names_cache.txt found. Skipping author name matching.")
+    return {}
+
 
 def fetch_author_hindexes(authorships):
     if not authorships:
